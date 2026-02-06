@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Sales Intake Form</title>
+    <style>
+      body {
+        background: black;
+        color: white;
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .logo {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        width: 190px;
+      }
+      form {
+        max-width: 900px;
+        margin: auto;
+        margin-top: 120px;
+        background: #ffffff;
+        color: black;
+        padding: 20px;
+        border-radius: 10px;
+      }
+      h2 {
+        border-bottom: 1px solid #444;
+        padding-bottom: 5px;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="date"],
+      input[type="time"] {
+        width: 100%;
+        padding: 6px;
+        margin-top: 4px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #333;
+        color: white;
+        border-radius: 5px;
+        border: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <form id="clientForm">
+      <h2>Basic Info</h2>
+      <label>Client Name: <input type="text" name="client" required /></label>
+      <label
+        >Client Email: <input type="email" name="client_email" required
+      /></label>
+
+      <h2>Features</h2>
+
+      <label
+        >Feature 1 <input type="radio" name="feature_1" value="Yes" />Yes
+        <input type="radio" name="feature_1" value="No" />No</label
+      >
+
+      <label
+        >Feature 2 <input type="radio" name="feature_2" value="Yes" />Yes
+        <input type="radio" name="feature_2" value="No" />No</label
+      >
+
+      <!-- KEEP YOUR FULL 31 QUESTIONS HERE EXACTLY -->
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+      const BOT_TOKEN = "8281339775:AAHGmiwacNNsZl1JxYzRgBvKwP2KaX-ge6M";
+      const CHAT_ID = "-5249336302";
+
+      document
+        .getElementById("clientForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          let yesCount = 0;
+          let yesQuestions = [];
+          let clientName = "";
+          let clientEmail = "";
+
+          for (let [key, value] of formData.entries()) {
+            if (key === "client") clientName = value;
+            if (key === "client_email") clientEmail = value;
+
+            if (value === "Yes") {
+              yesCount++;
+              yesQuestions.push(key);
+            }
+          }
+
+          // Save YES questions for second page
+          localStorage.setItem("yesQuestions", JSON.stringify(yesQuestions));
+          localStorage.setItem("clientName", clientName);
+          localStorage.setItem("clientEmail", clientEmail);
+
+          const message = `🆕 New client demo ready
+Client: ${clientName}
+Approved items: ${yesCount}
+👉 Open the demo form:
+second_form.html`;
+
+          fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: CHAT_ID,
+              text: message,
+            }),
+          }).then(() => {
+            window.location.href = "second_form.html";
+          });
+        });
+    </script>
+  </body>
+</html>

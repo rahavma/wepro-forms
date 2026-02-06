@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Client Demo Form</title>
+    <style>
+      body {
+        background: #f2f2f2;
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        color: #333;
+      }
+      h1,
+      h2 {
+        text-align: center;
+      }
+      .question {
+        background: white;
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #333;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Client Demo Form</h1>
+    <h2 id="clientNameHeader"></h2>
+
+    <div id="yesQuestionsContainer"></div>
+
+    <button id="finishBtn">Finish Demo</button>
+
+    <script>
+      // Get stored data from Form 1
+      const yesQuestions = JSON.parse(
+        localStorage.getItem("yesQuestions") || "[]",
+      );
+      const clientName = localStorage.getItem("clientName") || "Client";
+      const clientEmail = localStorage.getItem("clientEmail") || "";
+
+      document.getElementById("clientNameHeader").innerText =
+        `Client: ${clientName}`;
+
+      const container = document.getElementById("yesQuestionsContainer");
+
+      if (yesQuestions.length === 0) {
+        container.innerHTML = "<p>No questions were answered YES.</p>";
+      } else {
+        yesQuestions.forEach((q, index) => {
+          const div = document.createElement("div");
+          div.classList.add("question");
+          div.innerHTML = `<strong>Question ${index + 1}:</strong> ${q}`;
+          container.appendChild(div);
+        });
+      }
+
+      // Optional: finish button clears storage and redirects
+      document.getElementById("finishBtn").addEventListener("click", () => {
+        localStorage.removeItem("yesQuestions");
+        localStorage.removeItem("clientName");
+        localStorage.removeItem("clientEmail");
+        alert("Demo finished ✅");
+        window.location.href = "form1.html"; // go back to Form 1
+      });
+    </script>
+  </body>
+</html>
